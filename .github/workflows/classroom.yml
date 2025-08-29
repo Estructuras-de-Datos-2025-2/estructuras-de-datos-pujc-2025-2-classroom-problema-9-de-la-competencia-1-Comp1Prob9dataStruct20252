@@ -1,0 +1,30 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Pruebas Problema 9 Competencia 1
+      id: pruebas-problema-9-competencia-1
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Pruebas Problema 9 Competencia 1
+        setup-command: "./tests/setup.sh"
+        command: "./tests/run_tests.sh"
+        timeout: 1
+        max-score: 1
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        PRUEBAS-PROBLEMA-9-COMPETENCIA-1_RESULTS: "${{steps.pruebas-problema-9-competencia-1.outputs.result}}"
+      with:
+        runners: pruebas-problema-9-competencia-1
